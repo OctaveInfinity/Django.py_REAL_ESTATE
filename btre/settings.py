@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig', #  'pages', 
     'listings.apps.ListingsConfig', #  'listings',
     'realtors.apps.RealtorsConfig', #  'realtors',
+    'accounts.apps.AccountsConfig', #  'accounts',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -143,3 +144,13 @@ STATICFILES_DIRS = [
 # Media Folder Settings
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Messages
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}
+try:
+    from .local_settings import *
+except ImportError:
+    pass
