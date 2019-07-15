@@ -12,7 +12,6 @@ def register(request):
     email = request.POST['email']
     password = request.POST['password']
     password2 = request.POST['password2']
-
     # Check if passwords match
     if password == password2:
       # Check username
@@ -43,9 +42,7 @@ def login(request):
   if request.method == 'POST':
     username = request.POST['username']
     password = request.POST['password']
-
     user = auth.authenticate(username=username, password=password)
-
     if user is not None:
       auth.login(request, user)
       messages.success(request, 'You are now logged in')
@@ -64,7 +61,6 @@ def logout(request):
 
 def dashboard(request):
   user_contacts = Contact.objects.order_by('-contact_date').filter(user_id=request.user.id)
-
   context = {
     'contacts': user_contacts
   }
