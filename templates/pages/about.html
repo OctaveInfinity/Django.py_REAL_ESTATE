@@ -1,15 +1,14 @@
 {% extends 'base.html' %} 
 {% load static %}
-{% block title %} | About Us {% endblock %}
-
+{% block title %} | About {% endblock %}
 {% block content %}
 
 <section id="showcase-inner" class="py-5 text-white">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-          <h1 class="display-4">About BT Real Estate</h1>
-          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
+          <h1 class="display-4">OK Real Estate</h1>
+          <p class="lead">This is a demo version of a simple website for a real estate agency.</p>
         </div>
       </div>
     </div>
@@ -37,12 +36,10 @@
         
         <!-- Our Company -->
         <div class="col-md-8">
-          <h2>We Search For The Perfect Home</h2>
-          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
+          <h2>We will find the perfect home for you</h2>
+          <p class="mt-4">OK Real Estate Agency provides a professional and individual approach to each client.</p>
           <img src="{% static 'img/about.jpg' %}" alt="">
-          <p class="mt-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis esse officia repudiandae ad saepe ex, amet
-            neque quod accusamus rem quia magnam magni dolorum facilis ullam minima perferendis? Exercitationem at quaerat
-            commodi id libero eveniet harum perferendis laborum molestias quia.</p>
+          <p class="mt-4">The staff of our agency will give you professional advice on all issues of buying or renting real estate and help you choose the option according to your requirements.</p>
         </div>
         
         <!-- Seller of the Month -->
@@ -52,7 +49,7 @@
             <div class="card">
                 <img class="card-img-top" src="{{ realtor.photo.url }}" alt="Seller of the month">
                 <div class="card-body">
-                  <h5 class="card-title">Seller Of The Month</h5>
+                  <h5 class="card-title">Seller of the month</h5>
                   <h6 class="text-secondary">{{ realtor.name }}</h6>
                   <p class="card-text">{{ realtor.description }}</p>
                 </div>
@@ -67,16 +64,16 @@
 
   <!-- Work -->
   <section id="work" class="bg-dark text-white text-center">
-    <h2 class="display-4">We Work For You</h2>
-    <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem velit aperiam, unde aliquid at similique!</h4>
+    <h3 class="display-4">We will work for You</h3>
+    <!-- <h4>We offer verification of all documents that come to us, as well as free legal advice to our clients.</h4> -->
     <hr>
-    <a href="{% url 'listings' %}" class="btn btn-secondary text-white btn-lg">View Our Featured Listings</a>
+    <a href="{% url 'listings' %}" class="btn btn-secondary text-white btn-lg">View our listings</a>
   </section>
 
   <!-- Team -->
   <section id="team" class="py-5">
     <div class="container">
-      <h2 class="text-center">Our Team</h2>
+      <!-- <h2 class="text-center">Our team</h2> -->
       <div class="row text-center">
         {% if realtors %}
           {% for realtor in realtors %}

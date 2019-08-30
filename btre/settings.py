@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku #django-heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't&b1qakt8iawckmg_(ed!)#dk17&1tgns_bm2=v)nr4su$ha6('
+SECRET_KEY = os.environ.get('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = (os.environ.get('DEBUG_VALUE') == 'True') 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['octave-brokerage.herokuapp.com']
 
 
 # Application definition
@@ -36,14 +38,17 @@ INSTALLED_APPS = [
     'realtors.apps.RealtorsConfig', #  'realtors',
     'accounts.apps.AccountsConfig', #  'accounts',
     'contacts.apps.ContactsConfig', #  'contacts',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', # staticfiles 
     'django.contrib.humanize', # format values
+    'storages', # for boto3 
+    
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -54,14 +59,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    
 ]
 
-ROOT_URLCONF = 'btre.urls'
+ROOT_URLCONF = 'btre.urls' # '{{ project_name }}..urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # by default: 'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # by default: [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'btre.wsgi.application'
+WSGI_APPLICATION = 'btre.wsgi.application' #'{{ project_name }}.wsgi.application'
 
 
 # Database
@@ -82,20 +89,11 @@ WSGI_APPLICATION = 'btre.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'btredb',
         'USER': 'postgres',
         'PASSWORD': 'MyPassword',
         'HOST': 'localhost',
-        
-        # 'HOST': '127.0.0.1',
-        # 'PORT': '5432',
-
-
-
     }
 }
 
@@ -104,18 +102,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 
@@ -123,35 +113,49 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'btre/static')
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # was static
+STATIC_URL = '/static/' #ok
 
 # Media Folder Settings
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #ok
+MEDIA_URL = '/media/' #ok
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'btre/static') # heroku config:set DISABLE_COLLECTSTATIC=0
+]
+
+#======================From django_project ========================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# ===================================================================
 
 # Messages
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+
+# Configure Django App for Heroku.
+# Activate Django-Heroku.
+django_heroku.settings(locals())

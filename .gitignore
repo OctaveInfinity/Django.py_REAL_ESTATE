@@ -3,6 +3,9 @@
 
 /static
 /media
+/image
+/.vscode
+
 
 ### Django ###
 *.log
